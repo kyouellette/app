@@ -1,20 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useCallback } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native';
+import { Colors } from './src/style/colors';
+import { Router } from './src/navigation/stack-navigator'; // Import your StackNavigator
+// import * as SplashScreen from 'expo-splash-screen';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AuthProvider } from './src/contexts/auth-context';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+type CustomStatusBarType = {
+  backgroundColor: string,
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const CustomStatusBar = ({
+  backgroundColor,
+}: CustomStatusBarType) => {
+  const insets = useSafeAreaInsets()
+
+  return (
+    <View style={{ height: insets.top, backgroundColor: backgroundColor || 'white'}}>
+      <StatusBar animated={true} barStyle={'light-content'} />
+    </View>
+  )
+}
+
+export default function App() {
+  // May use later, load custom font
+  // const [fontsLoaded] = useFonts({
+  //   'Semi-Bold': require('./assets/fonts/Semi-Bold.ttf'),
+  // });
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (fontsLoaded) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded]);
+
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
+
+  return (
+    <AuthProvider>
+    <SafeAreaProvider>
+      <CustomStatusBar backgroundColor={Colors.blackOne}/>
+      <Router />
+    </SafeAreaProvider>
+    </AuthProvider>
+  );
+}

@@ -6,14 +6,12 @@ import AppStack from './app-stack';
 import AuthStack from './auth-stack';
 
 export const Router = () => {
-  const { authData, loading } = useAuth();
-  console.log(authData);
-  // if (loading) {
-  //   return <Loading />
-  // }
+  const { user } = useAuth();
+  
+  console.log(user);
   return (
     <NavigationContainer>
-      {authData?.token ? <AppStack /> : <AuthStack />}
+      {user ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   )
 }

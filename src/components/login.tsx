@@ -10,11 +10,13 @@ import { sbThirty, rEighteen, rEight, sbEighteen } from '../style/fonts';
 import circlesDesignImage from '../../assets/circles-design.png';
 
 import { TextInput, View } from 'react-native';
+import { useAuth } from '../contexts/auth-context';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
+  const { signIn } = useAuth()
 
   type SignupScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Signup'>;
 
@@ -29,7 +31,7 @@ const Login = () => {
   };
 
   const handleSubmit = () => {
-    // Handle form submission here
+    signIn(email, password);
   };
 
   return (

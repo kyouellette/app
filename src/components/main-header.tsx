@@ -2,15 +2,14 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
-import ChevronLeft from '../../assets/icons/chevron-left.svg';
+import { Colors } from '../style/colors';
 
-const BackHeader = () => {
+const MainHeader = () => {
     const navigation = useNavigation();
   return (
     <NavHeader>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <ContentContainer>
-      <ChevronLeft width={24} height={24} />
       </ContentContainer>
       </TouchableOpacity>
     </NavHeader>
@@ -18,6 +17,7 @@ const BackHeader = () => {
 };
 
 const NavHeader = styled.View`
+  background-color: ${Colors.blackOne};
   padding: 16px 0px;
   border-top-width: 1px;
   border-top-color: rgba(0, 0, 0, 0.15);
@@ -25,8 +25,13 @@ const NavHeader = styled.View`
   border-bottom-color: rgba(0, 0, 0, 0.25);
 `;
 
+const HorizontalLine = styled.View`
+  width: 100%;
+  border-bottom-width: 1px;
+`
+
 const ContentContainer = styled.View`
   padding-left: 12px;
 `
 
-export default BackHeader;
+export default MainHeader;

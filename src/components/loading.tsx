@@ -1,10 +1,10 @@
 import styled from 'styled-components/native';
 import { Text } from 'react-native';
 
-export const HomeScreen = () => {
+export const Loading = () => {
   return (
     <ScreenContainer>
-      <Text>Home</Text>
+      <Text>Loading</Text>
     </ScreenContainer>
   );
 }
@@ -12,7 +12,7 @@ export const HomeScreen = () => {
 const ScreenContainer = styled.View`
   flex: 1;
   width: 100%;
-  background-color: lightblue;
+  background-color: white;
 `;
 
-export default HomeScreen
+export default Loading

@@ -5,6 +5,7 @@ import { Pressable, TouchableOpacity } from 'react-native';
 import BackHeader from './back-header';
 import { Colors } from '../style/colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useAuth } from '../contexts/auth-context';
 import { sbThirty, rSixteen, rEighteen, sbEighteen } from '../style/fonts';
 
 import { TextInput, View } from 'react-native';
@@ -15,9 +16,17 @@ const Signup = () => {
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const [dobSelected, setDOBSelected] = useState(false);
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(true);
+
+  const { signUp } = useAuth();
 
   const handleEmailChange = (text: string) => {
     setEmail(text);
+  };
+
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
   };
 
   const handleNameChange = (text: string) => {
@@ -42,7 +51,7 @@ const Signup = () => {
   }
  
   const handleSubmit = () => {
-    // Handle form submission here
+    signUp(email, password);
   };
 
   return (
@@ -71,6 +80,16 @@ const Signup = () => {
           onChangeText={handleEmailChange}
           placeholder="Email Address"
           placeholderTextColor={Colors.white}
+        />
+        </InputField>
+        <InputField>
+        <TextInput
+          style={InputStyles}
+          value={password}
+          onChangeText={handlePasswordChange}
+          placeholder="Password"
+          placeholderTextColor={Colors.white}
+          secureTextEntry={showPassword}
         />
         </InputField>
         <InputField>

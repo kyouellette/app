@@ -11,8 +11,10 @@ import { sbThirty, rSixteen, rEighteen, sbEighteen } from '../style/fonts';
 import { TextInput, View } from 'react-native';
 
 const Signup = () => {
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const [dobSelected, setDOBSelected] = useState(false);
@@ -25,12 +27,20 @@ const Signup = () => {
     setEmail(text);
   };
 
+  const handleUsernameChange = (text: string) => {
+    setUsername(text);
+  }
+
   const handlePasswordChange = (text: string) => {
     setPassword(text);
   };
 
-  const handleNameChange = (text: string) => {
-    setFullName(text);
+  const handleFirstNameChange = (text: string) => {
+    setFirstName(text);
+  };
+
+  const handleLastNameChange = (text: string) => {
+    setLastName(text);
   };
 
   const handleDateChange = ({type}: {type?: string}, date?: Date) => {
@@ -51,7 +61,7 @@ const Signup = () => {
   }
  
   const handleSubmit = () => {
-    signUp(email, password);
+    signUp({email, password, firstName, lastName, username});
   };
 
   return (
@@ -67,9 +77,18 @@ const Signup = () => {
         <InputField>
         <TextInput
           style={InputStyles}
-          value={fullName}
-          onChangeText={handleNameChange}
-          placeholder="Full Name"
+          value={firstName}
+          onChangeText={handleFirstNameChange}
+          placeholder="First Name"
+          placeholderTextColor={Colors.white}
+        />
+        </InputField>
+        <InputField>
+        <TextInput
+          style={InputStyles}
+          value={lastName}
+          onChangeText={handleLastNameChange}
+          placeholder="Last Name"
           placeholderTextColor={Colors.white}
         />
         </InputField>
@@ -79,6 +98,15 @@ const Signup = () => {
           value={email}
           onChangeText={handleEmailChange}
           placeholder="Email Address"
+          placeholderTextColor={Colors.white}
+        />
+        </InputField>
+        <InputField>
+        <TextInput
+          style={InputStyles}
+          value={username}
+          onChangeText={handleUsernameChange}
+          placeholder="Username"
           placeholderTextColor={Colors.white}
         />
         </InputField>
@@ -150,7 +178,7 @@ const ConfirmText = styled.Text`
 
 const ContentContainer = styled.View` 
   flex: 1;
-  padding-top: 32px;
+  padding-top: 20px;
   padding-left: 16px;
   padding-right: 16px;
   flex-direction: column;
@@ -165,7 +193,7 @@ const InputStyles = {
 };
 
 const InputContainer = styled.View`
-  margin: 48px 0px;
+  margin: 24px 0px;
 `;
 
 const HeaderText = styled.Text`
@@ -182,7 +210,7 @@ const SubHeaderText = styled.Text`
 const InputField = styled.View`
   flex-direction: row;
   border-bottom-width: 1px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   border-color: ${Colors.blackThree};
 `;
 

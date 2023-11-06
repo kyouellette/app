@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../components/home';
+import Main from '../components/main-screen';
 
 const Stack = createStackNavigator();
 
 export type AppStackParamList = {
-  Home: undefined
+  Main: undefined
 };
 
 const AppStack = () => {
@@ -14,7 +14,7 @@ const AppStack = () => {
         <Stack.Navigator initialRouteName={"Home"} screenOptions={{
           headerShown: false, // Hide the header for all screens in this navigator
         }}>
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Main" component={Main} />
         </Stack.Navigator>
     );
   }

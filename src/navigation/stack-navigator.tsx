@@ -8,7 +8,6 @@ import AuthStack from './auth-stack';
 export const Router = () => {
   const { user } = useAuth();
   
-  console.log(user);
   return (
     <NavigationContainer>
       {user ? <AppStack /> : <AuthStack />}

@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native';
 import { Colors } from '../style/colors';
 import UserCircle from '../../assets/icons/user-circle.svg';
 
-const Home = () => {
+const Financial = () => {
   return (
     <AvatarContainer>
     </AvatarContainer>
@@ -17,4 +17,4 @@ const AvatarContainer = styled.View`
   border-radius: 50%;
 `;
 
-export default Home;
+export default Financial;

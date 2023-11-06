@@ -1,12 +1,13 @@
 import React, {createContext, useState, useContext, ReactNode, useEffect} from 'react';
 import { auth } from '../../firebaseConfig';
+import { userPostRequest, userGetRequest, walletPostRequest, walletGetRequest } from '../api/api';
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
 // import {AuthData, authService} from '../services/authService';
 
 type AuthContextData = {
-    user?: string;
+    user: User | null | undefined;
     signIn(email: string, password: string): Promise<void>;
-    signUp(email: string, password: string): Promise<void>;
+    signUp({email, password, firstName, lastName, username}: CreateUserType): Promise<void>;
     signOut(): void;
   };
       
@@ -16,19 +17,40 @@ type AuthContextData = {
     name: string;
   };
 
+  type CreateUserType = {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    userId?: string;
+    username: string;
+  }
+
+  type User = {
+    userId?: string;
+    username?: string;
+    balance?: string;
+  }
+
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
   const [loading, setLoading] = useState();
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState<User | null>();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
       if (user) {
-        setUser(await user.getIdToken());
+        const userData = await userGetRequest(`get/${user.uid}`, {});
+        const walletData = await walletGetRequest(`${user.uid}`, {})
+        setUser({
+          userId: userData?.userId,
+          username: userData?.username,
+          balance: walletData?.balance
+        });
       } else {
-        setUser('');
+        setUser(null);
       }
     })
     return unsubscribe;
@@ -42,9 +64,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     auth.signOut();
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async ({email, password, firstName, lastName, username}: CreateUserType) => {
+    try {
     const user = await createUserWithEmailAndPassword(auth, email, password);
-    setUser(await user.user.getIdToken());
+    const userId = user.user.uid;
+    const createdUser = await userPostRequest('/create', {email, password, firstName, lastName, userId, username});
+    const createdWallet = await walletPostRequest('/create', createdUser.userId);
+    setUser({userId: createdUser?.userId, username: createdUser?.username, balance: createdWallet?.balance});
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

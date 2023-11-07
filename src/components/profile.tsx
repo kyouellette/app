@@ -1,34 +1,46 @@
 import styled from 'styled-components/native';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../contexts/auth-context';
 import { Colors } from '../style/colors';
-import MainHeader from './main-header';
+import { AppStackParamList } from '../navigation/app-stack';
 import ProfileIcon from '../../assets/icons/user.svg';
 import LogoutIcon from '../../assets/icons/logout-1.svg';
 import TermsIcon from '../../assets/icons/document-text.svg';
 import UseIcon from '../../assets/icons/information-circle.svg';
+import TwitchIcon from '../../assets/icons/twitch.svg'
 import Avatar from './avatar';
 import ChevronRight from '../../assets/icons/chevron-right.svg';
 import { mSixteen, sbTwentyFour } from '../style/fonts';
 import React from 'react';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const Profile = () => {
   const { signOut } = useAuth()
   const handleLogout = () => {
     signOut();
   }
+  const { user } = useAuth();
+
+  const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
   const ProfileOptions = [{
     name: 'Personal Information',
-    icon: <ProfileIcon width={24} height={24}/>
+    icon: <ProfileIcon width={24} height={24}/>,
+    navigationScreen: 'EditProfile'
 },
 {
     name: 'Terms & Conditions',
-    icon: <TermsIcon />
+    icon: <TermsIcon />,
+    navigationScreen: 'Terms'
 },
 {
     name: 'How to Use',
-    icon: <UseIcon />
+    icon: <UseIcon />,
+    navigationScreen: 'HowToUse',
+},{
+    name: 'Become a Streamer',
+    icon: <TwitchIcon />,
+    navigationScreen: 'AddTwitch'
 }]
 
   return (
@@ -38,12 +50,16 @@ const Profile = () => {
       <AvatarContainer>
         <Avatar width={64} height={64} />
       </AvatarContainer>
-      <NameContainer>{'Kyle'}</NameContainer>
+      <NameContainer>{user?.username}</NameContainer>
       </AvatarNameContainer>
         <OptionsWrapper>
         {ProfileOptions.map((option, index) => (
-            <>
-      <OptionContainer key={index}>
+            <View key={index}>
+      <OptionContainer onPress={() => {
+        if(option?.navigationScreen) {
+          navigation.navigate(option?.navigationScreen || 'Main');
+        }
+      }}>
             <IconAndTitleContainer>
             <IconContainer>
         {React.cloneElement(option.icon, {
@@ -55,7 +71,7 @@ const Profile = () => {
             <ChevronRight color={Colors.blackThree}/>
       </OptionContainer>
       <LineSeparator />
-      </>
+      </View>
     ))}
     <LogoutOptionContainer onPress={() => handleLogout()}>
     <IconAndTitleContainer>

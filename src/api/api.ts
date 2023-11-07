@@ -29,7 +29,7 @@ export const userGetRequest = async (endpoint: string, data: any) => {
 
 export const walletPostRequest = async (endpoint: string, data: any) => {
   try {
-    const response = await userApiClient.post(endpoint, data);
+    const response = await walletApiClient.post(endpoint, data);
     return response.data;
   } catch (error) {
     throw error;

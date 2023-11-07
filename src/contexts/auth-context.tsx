@@ -32,6 +32,11 @@ type AuthContextData = {
     balance?: string;
   }
 
+  type Wallet = {
+    userId?: string;
+    balance?: string;
+  }
+
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
@@ -41,7 +46,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
-      if (user) {
+      if (user?.uid) {
         const userData = await userGetRequest(`get/${user.uid}`, {});
         const walletData = await walletGetRequest(`${user.uid}`, {})
         setUser({
@@ -56,6 +61,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     return unsubscribe;
   })
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user?.userId) {
+        try {
+          const wallet = await walletGetRequest(user.userId, {});
+
+          if (wallet && user.balance !== wallet.balance) {
+            setUser((prevUser) => ({
+              ...prevUser,
+              balance: wallet.balance,
+            }));
+          }
+        } catch (error) {
+          console.error('Error fetching wallet balance:', error);
+        }
+      }
+    };
+
+    fetchData();
+    // You can specify dependencies here if needed
+  }, [user?.userId]);
+
+
   const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
   };
@@ -68,9 +96,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     try {
     const user = await createUserWithEmailAndPassword(auth, email, password);
     const userId = user.user.uid;
-    const createdUser = await userPostRequest('/create', {email, password, firstName, lastName, userId, username});
-    const createdWallet = await walletPostRequest('/create', createdUser.userId);
-    setUser({userId: createdUser?.userId, username: createdUser?.username, balance: createdWallet?.balance});
+    if (email && firstName && lastName && username && userId) {
+    const createdUser = await userPostRequest('/create', {email, firstName, lastName, username, userId});
+    setUser({...user, userId: createdUser?.id, username: createdUser.username})
+    }
+    if (userId) {
+    const createdWallet = await walletPostRequest('/create', {userId});
+    setUser({...user, balance: createdWallet?.balance})
+    }
     } catch (error) {
       console.log(error);
     }

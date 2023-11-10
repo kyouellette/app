@@ -124,11 +124,14 @@ async function fetchTwitchStreamUrl(channel: string, accessToken: string): Promi
 }
 
 export const getTwitchStreams = async (): Promise<StreamData[]> => {
+  function isEmptyObject(obj: {}) {
+    return obj && Object.keys(obj).length === 0;
+  }
   const usernames = await userGetRequest('/twitch', {});
   const accessToken = 'ump9ehmjsylsgpi2kxnrc714qzh1es';
-  const streamPromises = usernames.map(async (channel: string) => {
+  const streamPromises = usernames?.map(async (channel: string) => {
     const streamData = await fetchTwitchStreamUrl(channel, accessToken);
-    if (Object.keys(streamData).length > 0) {
+    if (!isEmptyObject(streamData)) {
       return streamData;
     }
   })

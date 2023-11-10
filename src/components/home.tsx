@@ -29,7 +29,9 @@ const Home = () => {
   useEffect(() => {
     async function loadTwitchStreams() {
       const twitchStreams = await getTwitchStreams();
-      setStreams(twitchStreams);
+      if (Array.isArray(twitchStreams) && twitchStreams.some(stream => stream !== undefined)) {
+        setStreams(twitchStreams);
+      }
     }
 
     loadTwitchStreams();

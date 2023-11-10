@@ -43,7 +43,7 @@ const NavHeader = styled.View`
   background-color: ${Colors.blackOne};
   padding: 16px 24px;
   border-top-width: 1px;
-  border-top-color: rgba(0, 0, 0, 0.10);
+  border-top-color: rgba(0, 0, 0, 0.15);
   border-bottom-width: 4px;
   border-bottom-color: rgba(0, 0, 0, 0.25);
 `;

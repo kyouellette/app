@@ -7,8 +7,7 @@ import { AuthStackParamList } from '../navigation/auth-stack';
 
 import { Colors } from '../style/colors';
 import { sbThirty, rEighteen, rEight, sbEighteen } from '../style/fonts';
-import circlesDesignImage from '../../assets/circles-design.png';
-
+import circlesDesignImage from '../../assets/circles-design.png'
 import { TextInput, View } from 'react-native';
 import { useAuth } from '../contexts/auth-context';
 
@@ -36,7 +35,6 @@ const Login = () => {
 
   return (
     <ScreenContainer>
-      <BackgroundImage source={circlesDesignImage} />
       <ContentContainer>
         <View>
       <HeaderContainer>

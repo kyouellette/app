@@ -8,7 +8,7 @@ import UserCircle from '../../assets/icons/user-circle.svg';
 const Avatar = ({width, height}: {width?: number, height?: number}) => {
   return (
     <AvatarContainer>
-        <UserCircle width={width || 42} height={height || 42} />
+        <UserCircle width={width || 42} height={height || 42} color={"black"} />
     </AvatarContainer>
   );
 };

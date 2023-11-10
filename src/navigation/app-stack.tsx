@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Main from '../components/main-screen';
 import AddTwitch from '../components/add-twitch';
+import StreamerDashboard from '../components/streamer-dashboard';
 
 const Stack = createStackNavigator();
 
@@ -13,6 +14,7 @@ export type AppStackParamList = {
   Terms: undefined
   Loading: undefined
   HowToUse: undefined
+  StreamerDashboard: undefined
 };
 
 const AppStack = () => {
@@ -22,6 +24,7 @@ const AppStack = () => {
         }}>
           <Stack.Screen name="Main" component={Main} />
           <Stack.Screen name="AddTwitch" component={AddTwitch} />
+          <Stack.Screen name="StreamerDashboard" component={StreamerDashboard} />
         </Stack.Navigator>
     );
   }

@@ -11,36 +11,46 @@ import TwitchIcon from '../../assets/icons/twitch.svg'
 import Avatar from './avatar';
 import ChevronRight from '../../assets/icons/chevron-right.svg';
 import { mSixteen, sbTwentyFour } from '../style/fonts';
-import React from 'react';
+import React, { useState } from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const Profile = () => {
+  const { user } = useAuth();
   const { signOut } = useAuth()
   const handleLogout = () => {
     signOut();
   }
-  const { user } = useAuth();
 
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
   const ProfileOptions = [{
     name: 'Personal Information',
     icon: <ProfileIcon width={24} height={24}/>,
-    navigationScreen: 'EditProfile'
+    navigationScreen: 'EditProfile',
+    visible: true,
 },
 {
     name: 'Terms & Conditions',
-    icon: <TermsIcon />,
-    navigationScreen: 'Terms'
+    icon: <TermsIcon width={24} height={24} />,
+    navigationScreen: 'Terms',
+    visible: true,
 },
 {
     name: 'How to Use',
-    icon: <UseIcon />,
+    icon: <UseIcon width={24} height={24} />,
     navigationScreen: 'HowToUse',
+    visible: true,
 },{
     name: 'Become a Streamer',
-    icon: <TwitchIcon />,
-    navigationScreen: 'AddTwitch'
+    icon: <TwitchIcon width={24} height={24} />,
+    navigationScreen: 'AddTwitch',
+    visible: !user?.twitchLinked,
+},
+{
+  name: 'Streamer Dashboard',
+  icon: <TwitchIcon width={24} height={24} />,
+  navigationScreen: 'StreamerDashboard',
+  visible: user?.twitchLinked,
 }]
 
   return (
@@ -53,11 +63,12 @@ const Profile = () => {
       <NameContainer>{user?.username}</NameContainer>
       </AvatarNameContainer>
         <OptionsWrapper>
-        {ProfileOptions.map((option, index) => (
+        {ProfileOptions.map((option, index) => {if (option?.visible) return (
             <View key={index}>
       <OptionContainer onPress={() => {
         if(option?.navigationScreen) {
-          navigation.navigate(option?.navigationScreen || 'Main');
+          const navScreen = option?.navigationScreen || 'Main'
+          navigation.navigate(navScreen);
         }
       }}>
             <IconAndTitleContainer>
@@ -72,7 +83,7 @@ const Profile = () => {
       </OptionContainer>
       <LineSeparator />
       </View>
-    ))}
+    )})}
     <LogoutOptionContainer onPress={() => handleLogout()}>
     <IconAndTitleContainer>
             <IconContainer>

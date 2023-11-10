@@ -1,6 +1,6 @@
 import React, {createContext, useState, useContext, ReactNode, useEffect} from 'react';
 import { auth } from '../../firebaseConfig';
-import { userPostRequest, userGetRequest, walletPostRequest, walletGetRequest } from '../api/api';
+import { userPostRequest, userGetRequest, walletPostRequest, walletGetRequest, getTwitchChannelName, twitchStartupPostRequest, userPatchRequest } from '../api/api';
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
 // import {AuthData, authService} from '../services/authService';
 
@@ -9,12 +9,8 @@ type AuthContextData = {
     signIn(email: string, password: string): Promise<void>;
     signUp({email, password, firstName, lastName, username}: CreateUserType): Promise<void>;
     signOut(): void;
-  };
-      
-  type AuthData = {
-    token: string;
-    email: string;
-    name: string;
+    saveTwitchDetails(code: string): void;
+    unLinkTwitch(): void;
   };
 
   type CreateUserType = {
@@ -30,11 +26,7 @@ type AuthContextData = {
     userId?: string;
     username?: string;
     balance?: string;
-  }
-
-  type Wallet = {
-    userId?: string;
-    balance?: string;
+    twitchLinked?: boolean;
   }
 
 
@@ -52,7 +44,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
         setUser({
           userId: userData?.userId,
           username: userData?.username,
-          balance: walletData?.balance
+          balance: walletData?.balance,
+          twitchLinked: userData?.twitchAccessToken ? true : false,
         });
       } else {
         setUser(null);
@@ -92,6 +85,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     auth.signOut();
   };
 
+  const saveTwitchDetails = async (code: string) => {
+    try {
+      const { access_token, refresh_token} = await twitchStartupPostRequest(code);
+      const twitchUsername = await getTwitchChannelName(access_token);
+      userPatchRequest('/twitch/add', {userId: user?.userId, twitchAccessToken: access_token, twitchRefreshToken: refresh_token, twitchUsername });
+      setUser({...user, twitchLinked: true});
+    } catch (error) {
+  
+    }
+  }
+
+  const unLinkTwitch = async () => {
+    try {
+      userPatchRequest('/twitch/add', {userId: user?.userId, twitchAccessToken: null, twitchRefreshToken: null, twitchUsername: null });
+      setUser({...user, twitchLinked: false});
+    } catch (error) {
+
+    }
+  }
+
   const signUp = async ({email, password, firstName, lastName, username}: CreateUserType) => {
     try {
     const user = await createUserWithEmailAndPassword(auth, email, password);
@@ -105,14 +118,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     setUser({...user, balance: createdWallet?.balance})
     }
     } catch (error) {
-      console.log(error);
+
     }
   };
 
   return (
     //This component will be used to encapsulate the whole App,
     //so all components will have access to the Context
-    <AuthContext.Provider value={{user, signIn, signOut, signUp}}>
+    <AuthContext.Provider value={{user, signIn, signOut, signUp, saveTwitchDetails, unLinkTwitch}}>
       {children}
     </AuthContext.Provider>
   );

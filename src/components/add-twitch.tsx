@@ -10,7 +10,6 @@ import BackHeader from './back-header';
 const AddTwitch = () => {
   const [showWebView, setShowWebView] = useState(false);
   const [errorState, setErrorState] = useState<boolean | null>(null)
-  const [accessCode, setAccessCode] = useState('');
   const handleSubmit = () => {
     setShowWebView(!showWebView);
   };
@@ -29,7 +28,7 @@ const AddTwitch = () => {
       </ContentContainer>
       {showWebView && (
           <WebViewContainer>
-        <TwitchAuthWebView setShowWebView={setShowWebView} setErrorState={setErrorState} setAccessCode={setAccessCode}/>
+        <TwitchAuthWebView setShowWebView={setShowWebView} setErrorState={setErrorState} />
         </WebViewContainer>
       )}
     </ScreenContainer>

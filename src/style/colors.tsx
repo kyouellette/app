@@ -20,5 +20,6 @@ export const Colors = {
     redFive: '#F7D4D8',
     redSix: '#FBEAEC',
     redSeven: '#FDF4F5',
+    yellowOne: 'rgba(255, 198, 11, 1)',
     white: '#FFFFFF',
 }

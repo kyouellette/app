@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { ScrollView } from 'react-native';
+import { Pressable } from 'react-native';
 import { Colors } from '../style/colors';
 import { rEighteen, sbTwentyFour } from '../style/fonts';
 import TwitchStreamThumbnail from './twitch-stream-thumbnail';
 import { getTwitchStreams } from '../api/api';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { AppStackParamList } from '../navigation/app-stack';
 
 type StreamData = {
   id?: string;
@@ -25,6 +27,7 @@ type StreamData = {
 
 const Home = () => {
   const [streams, setStreams] = useState<StreamData[]>([])
+  const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
   useEffect(() => {
     async function loadTwitchStreams() {
@@ -50,7 +53,9 @@ const Home = () => {
       {!isEmpty && (
         <FeaturedStreamScroll horizontal={true}>
       {streams.map((stream: StreamData, index: number) => (
-        <ComponentWrapper key={index}>
+        <ComponentWrapper onPress={() => {
+          navigation.navigate('Bet', stream);
+        }}key={index}>
           <TwitchStreamThumbnail stream={stream} />
         </ComponentWrapper>
       ))}        
@@ -76,7 +81,7 @@ const ScreenContainer = styled.View`
 const FeaturedStreamScroll = styled.ScrollView`
 `;
 
-const ComponentWrapper = styled.View`
+const ComponentWrapper = styled.Pressable`
   flex: 1;
   padding-left: 8px;
 `

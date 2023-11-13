@@ -4,8 +4,26 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Main from '../components/main-screen';
 import AddTwitch from '../components/add-twitch';
 import StreamerDashboard from '../components/streamer-dashboard';
+import Bet from '../components/bet';
 
 const Stack = createStackNavigator();
+
+type StreamData = {
+  id?: string;
+  user_id?: string;
+  user_login?: string;
+  user_name?: string;
+  game_id?: string;
+  game_name?: string;
+  type?: string;
+  title?: string;
+  tags?: string[];
+  viewer_count?: number;
+  started_at?: string;
+  thumbnail_url?: string;
+  tag_ids?: string[];
+  is_mature?: boolean;
+}
 
 export type AppStackParamList = {
   Main: undefined
@@ -15,6 +33,7 @@ export type AppStackParamList = {
   Loading: undefined
   HowToUse: undefined
   StreamerDashboard: undefined
+  Bet: StreamData
 };
 
 const AppStack = () => {
@@ -25,6 +44,7 @@ const AppStack = () => {
           <Stack.Screen name="Main" component={Main} />
           <Stack.Screen name="AddTwitch" component={AddTwitch} />
           <Stack.Screen name="StreamerDashboard" component={StreamerDashboard} />
+          <Stack.Screen name="Bet" component={Bet} />
         </Stack.Navigator>
     );
   }

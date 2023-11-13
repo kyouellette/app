@@ -1,5 +1,6 @@
 // apiService.ts
 import axios from 'axios';
+import { Bet, BetGroup, BetsPlaced } from '../types';
 
 const userApiClient = axios.create({
   baseURL: 'http://localhost:3000/api/user', // Base URL of your NestJS server
@@ -9,8 +10,12 @@ const walletApiClient = axios.create({
   baseURL: 'http://localhost:3001/api/wallet', // Base URL of your NestJS server
 });
 
-const twitchStartupApiClient = axios.create({
+const twitchApiClient = axios.create({
   baseURL: 'https://id.twitch.tv',
+})
+
+const betApiClient = axios.create({
+  baseURL: 'http://localhost:3002/api',
 })
 
 type TwitchTokenResponse = {
@@ -36,6 +41,12 @@ type StreamData = {
   thumbnail_url?: string;
   tag_ids?: string[];
   is_mature?: boolean;
+}
+
+type TwitchUserData = {
+  twitchUsername: string;
+  twitchAccessToken: string;
+  twitchRefreshToken: string;
 }
 
 export const userPostRequest = async (endpoint: string, data: any) => {
@@ -84,6 +95,24 @@ export const walletGetRequest = async (endpoint: string, data: any) => {
   }
 };
 
+export const betGetRequest = async (endpoint: string, data: any) => {
+  try {
+    const response = await betApiClient.get(endpoint, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const betPostRequest = async (endpoint: string, data: any) => {
+  try {
+    const response = await betApiClient.post(endpoint, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const twitchStartupPostRequest = async (code: string): Promise<TwitchTokenResponse> => {
   try {
     const requestData = {
@@ -93,14 +122,39 @@ export const twitchStartupPostRequest = async (code: string): Promise<TwitchToke
       grant_type: 'authorization_code',
       redirect_uri: 'http://localhost:3100'
     };
-    const response = await twitchStartupApiClient.post('/oauth2/token', requestData);
+    const response = await twitchApiClient.post('/oauth2/token', requestData);
     return response.data; // Return the response data, not the whole response object
   } catch (error) {
     throw error;
   }
 };
 
-async function fetchTwitchStreamUrl(channel: string, accessToken: string): Promise<StreamData> {
+const refreshTwitchDetails = async (oldTwitchAccessToken: string, newTwitchAccessToken: string) => {
+  try {
+    userPatchRequest('/twitch/refresh', { oldTwitchAccessToken, newTwitchAccessToken });
+  } catch (error) {
+
+  }
+}
+
+const twitchRefreshPost = async (refreshToken: string): Promise<TwitchTokenResponse> => {
+
+  try {
+    const requestData = {
+      client_id: 'uazprb0v9zr5p11om9mo3tc99h6r6h',
+      client_secret: '38l2fww55uo8ko7qp9cj1g3quk1gb2',
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken
+    }
+
+    const response = await twitchApiClient.post('/oauth2/token', requestData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function fetchTwitchStreamUrl(channel: string, accessToken: string, refreshToken: string): Promise<StreamData> {
   try {
     const clientId = 'uazprb0v9zr5p11om9mo3tc99h6r6h';
 
@@ -112,6 +166,12 @@ async function fetchTwitchStreamUrl(channel: string, accessToken: string): Promi
       },
     });
     const streamData = await response.json();
+
+    if (streamData?.status === 401) {
+      const newData = await twitchRefreshPost(refreshToken);
+      refreshTwitchDetails(accessToken, newData.access_token);
+      return fetchTwitchStreamUrl(channel, newData.access_token, refreshToken);
+    }
 
     // Get the stream URL from the API response
     if (streamData?.data) {
@@ -127,10 +187,9 @@ export const getTwitchStreams = async (): Promise<StreamData[]> => {
   function isEmptyObject(obj: {}) {
     return obj && Object.keys(obj).length === 0;
   }
-  const usernames = await userGetRequest('/twitch', {});
-  const accessToken = 'ump9ehmjsylsgpi2kxnrc714qzh1es';
-  const streamPromises = usernames?.map(async (channel: string) => {
-    const streamData = await fetchTwitchStreamUrl(channel, accessToken);
+  const users = await userGetRequest('/twitch', {});
+  const streamPromises = users?.map(async (user: TwitchUserData) => {
+    const streamData = await fetchTwitchStreamUrl(user.twitchUsername, user.twitchAccessToken, user.twitchRefreshToken);
     if (!isEmptyObject(streamData)) {
       return streamData;
     }
@@ -156,4 +215,36 @@ export async function getTwitchChannelName(accessToken: string): Promise<string>
     throw new Error('Failed to get Twitch channel name');
   }
 }
+
+export async function getOpenBetGroup(twitchUsername?: string): Promise<BetGroup> {
+  try {
+    return await betGetRequest(`group/streamer/${twitchUsername}`, {})
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function placeBet(
+  userId?: string,
+  betGroupId?: string,
+  twitchUsername?: string,
+  gameTitle?: string, 
+  totalBetAmount?: string, 
+  betsPlaced?: BetsPlaced[] ): Promise<Bet> {
+    try {
+      if(userId && betGroupId && twitchUsername && gameTitle && totalBetAmount && betsPlaced) {
+        return await betPostRequest(`/bet/create`, {
+          userId,
+          betGroupId,
+          twitchUsername,
+          gameTitle,
+          totalBetAmount,
+          betsPlaced
+        })
+      }
+    } catch (error) {
+      throw error;
+    }
+    return {}
+  }
 

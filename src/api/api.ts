@@ -3,11 +3,11 @@ import axios from 'axios';
 import { Bet, BetGroup, BetsPlaced } from '../types';
 
 const userApiClient = axios.create({
-  baseURL: 'http://localhost:3000/api/user', // Base URL of your NestJS server
+  baseURL: 'https://streambet-user.up.railway.app/api/user', // Base URL of your NestJS server
 });
 
 const walletApiClient = axios.create({
-  baseURL: 'http://localhost:3001/api/wallet', // Base URL of your NestJS server
+  baseURL: 'https://streambet-wallet.up.railway.app/api/wallet', // Base URL of your NestJS server
 });
 
 const twitchApiClient = axios.create({
@@ -15,7 +15,7 @@ const twitchApiClient = axios.create({
 })
 
 const betApiClient = axios.create({
-  baseURL: 'http://localhost:3002/api',
+  baseURL: 'https://streambet-bet.up.railway.app/api',
 })
 
 type TwitchTokenResponse = {

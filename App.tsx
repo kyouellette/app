@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, LogBox } from 'react-native';
 import { Colors } from './src/style/colors';
 import { Router } from './src/navigation/stack-navigator'; // Import your StackNavigator
 // import * as SplashScreen from 'expo-splash-screen';
@@ -23,6 +23,7 @@ const CustomStatusBar = ({
 }
 
 export default function App() {
+  LogBox.ignoreAllLogs();
   // May use later, load custom font
   // const [fontsLoaded] = useFonts({
   //   'Semi-Bold': require('./assets/fonts/Semi-Bold.ttf'),
@@ -39,7 +40,7 @@ export default function App() {
 
   return (
     <AuthProvider>
-    <SafeAreaProvider>
+    <SafeAreaProvider style={{backgroundColor: Colors.blackOne}}>
       <CustomStatusBar backgroundColor={Colors.blackOne}/>
       <Router />
     </SafeAreaProvider>

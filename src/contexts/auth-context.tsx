@@ -11,6 +11,7 @@ type AuthContextData = {
     signOut(): void;
     saveTwitchDetails(code: string): void;
     unLinkTwitch(): void;
+    loading: boolean;
   };
 
   type CreateUserType = {
@@ -32,27 +33,37 @@ type AuthContextData = {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
-  const [loading, setLoading] = useState();
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [loading, setLoading] = useState(true); // Set the initial loading state to true
   const [user, setUser] = useState<User | null>();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async user => {
-      if (user?.uid) {
-        const userData = await userGetRequest(`get/${user.uid}`, {});
-        const walletData = await walletGetRequest(`${user.uid}`, {})
-        setUser({
-          userId: userData?.userId,
-          username: userData?.username,
-          balance: walletData?.balance,
-          twitchLinked: userData?.twitchAccessToken ? true : false,
-        });
+    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+      setLoading(true); // Set loading to true when starting to fetch user data
+
+      if (authUser?.uid) {
+        try {
+          const userData = await userGetRequest(`get/${authUser.uid}`, {});
+          const walletData = await walletGetRequest(`${authUser.uid}`, {});
+          setUser({
+            userId: userData?.userId,
+            username: userData?.username,
+            balance: walletData?.balance,
+            twitchLinked: userData?.twitchAccessToken ? true : false,
+          });
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        } finally {
+          setLoading(false); // Set loading to false after fetching user data, whether successful or not
+        }
       } else {
         setUser(null);
+        setLoading(false); // Set loading to false if there is no authenticated user
       }
-    })
+    });
+
     return unsubscribe;
-  })
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,7 +136,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
   return (
     //This component will be used to encapsulate the whole App,
     //so all components will have access to the Context
-    <AuthContext.Provider value={{user, signIn, signOut, signUp, saveTwitchDetails, unLinkTwitch}}>
+    <AuthContext.Provider value={{user, signIn, signOut, signUp, loading, saveTwitchDetails, unLinkTwitch}}>
       {children}
     </AuthContext.Provider>
   );

@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Pressable } from 'react-native';
+import { Keyboard, Pressable, TouchableWithoutFeedback } from 'react-native';
 import { AuthStackParamList } from '../navigation/auth-stack';
 
 import { Colors } from '../style/colors';
@@ -34,6 +34,7 @@ const Login = () => {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <ScreenContainer>
       <ContentContainer>
         <View>
@@ -85,6 +86,7 @@ const Login = () => {
       </View>
       </ContentContainer>
     </ScreenContainer>
+    </TouchableWithoutFeedback>
   );
 }
 

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, LogBox } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, LogBox } from 'react-native';
 import { Colors } from './src/style/colors';
 import { Router } from './src/navigation/stack-navigator'; // Import your StackNavigator
 // import * as SplashScreen from 'expo-splash-screen';

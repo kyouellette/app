@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Colors } from '../style/colors';
 import { sbThirty, rEighteen, sbTwelve, sbFourteen, sbEighteen, sbTwentyFour, sbTwenty, mEighteen } from '../style/fonts';
@@ -7,9 +7,10 @@ import BackHeader from './back-header';
 import { useAuth } from '../contexts/auth-context';
 import { RouteProp } from '@react-navigation/native';
 import { AppStackParamList } from '../navigation/app-stack';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import WebView from 'react-native-webview';
 import { getOpenBetGroup, placeBet } from '../api/api';
-import { ActivityIndicator, TextInput } from 'react-native';
+import { ActivityIndicator, Keyboard, ScrollView, TextInput, TouchableWithoutFeedback } from 'react-native';
 import { BetGroup, BetOption } from '../types';
 
 type BetScreenRouteProp = RouteProp<AppStackParamList, 'Bet'>;
@@ -137,6 +138,7 @@ useEffect(() => {
   const embedUrl = `https://player.twitch.tv/?channel=${embedOptions.channel}&layout=${embedOptions.layout}&width=${embedOptions.width}&height=${embedOptions.height}&theme=${embedOptions.theme}&autoplay=${embedOptions.autoplay}&allowfullscreen=${embedOptions.allowfullscreen}&muted=${embedOptions.muted}&parent=${embedOptions.parent.join(',')}`;
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <ScreenContainer>
       <BackHeader />
       <WebViewContainer>
@@ -154,6 +156,14 @@ useEffect(() => {
             onLoad={() => setIsLoading(false)}
           />
         </WebViewContainer>
+        <KeyboardAwareScrollView
+      extraScrollHeight={80} // Adjust this value as needed
+      bounces={false}
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      enableOnAndroid={true}
+      keyboardShouldPersistTaps="handled"
+    >
         {!betGroupData && !isLoading && (
           <BettingClosedContainer>
             <BettingClosed>Bets are currently closed</BettingClosed>
@@ -212,10 +222,12 @@ useEffect(() => {
         </BetInputRow>
         <SubmitButton onPress={handleSubmit}>
           <SubmitText>Place Bet</SubmitText>
-        </SubmitButton>        
-        </BettingContainer>
+        </SubmitButton>   
+        </BettingContainer> 
       </ContentContainer>)}
+      </KeyboardAwareScrollView>
     </ScreenContainer>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -242,6 +254,16 @@ const OptionButton = styled.Pressable<{ isSelected: boolean }>`
   justify-content: center;
   flex: 1;
 `;
+
+
+const styles = {
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    flexGrow: 1,
+  }
+};
 
 const BettingClosed = styled.Text`
   ${sbTwentyFour};

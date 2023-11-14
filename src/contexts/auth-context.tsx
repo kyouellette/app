@@ -64,29 +64,32 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     return unsubscribe;
   }, []);
+  
+
+  const fetchWalletData = async () => {
+    if (user?.userId) {
+      try {
+        const wallet = await walletGetRequest(user.userId, {});
+
+        if (wallet && user.balance !== wallet.balance) {
+          setUser((prevUser) => ({
+            ...prevUser,
+            balance: wallet.balance,
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching wallet balance:', error);
+      }
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (user?.userId) {
-        try {
-          const wallet = await walletGetRequest(user.userId, {});
+    const fetchDataInterval = setInterval(() => {
+      fetchWalletData();
+    }, 2000);
 
-          if (wallet && user.balance !== wallet.balance) {
-            setUser((prevUser) => ({
-              ...prevUser,
-              balance: wallet.balance,
-            }));
-          }
-        } catch (error) {
-          console.error('Error fetching wallet balance:', error);
-        }
-      }
-    };
-
-    fetchData();
-    // You can specify dependencies here if needed
+    return () => clearInterval(fetchDataInterval);
   }, [user?.userId]);
-
 
   const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);

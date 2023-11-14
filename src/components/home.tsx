@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { Pressable } from 'react-native';
+import { ActivityIndicator, Pressable } from 'react-native';
 import { Colors } from '../style/colors';
 import { rEighteen, sbTwentyFour } from '../style/fonts';
 import TwitchStreamThumbnail from './twitch-stream-thumbnail';
@@ -26,6 +26,7 @@ type StreamData = {
 }
 
 const Home = () => {
+  const [loading, setisLoading] = useState(true);
   const [streams, setStreams] = useState<StreamData[]>([])
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
@@ -34,6 +35,7 @@ const Home = () => {
       const twitchStreams = await getTwitchStreams();
       if (Array.isArray(twitchStreams) && twitchStreams.some(stream => stream !== undefined)) {
         setStreams(twitchStreams);
+        setisLoading(false);
       }
     }
 
@@ -45,12 +47,15 @@ const Home = () => {
     <ScreenContainer>
       <Header>Featured Streams</Header>
       <ContentContainer>
-      {isEmpty && (
+      {loading && (
+         <ActivityIndicator size="large" color={Colors.greenOne} style={{marginTop: 32}} />
+      )}
+      {isEmpty && !loading && (
         <EmptyContainer>
           <EmptyText>There are no streamers to bet on</EmptyText>
         </EmptyContainer>
       )}
-      {!isEmpty && (
+      {!isEmpty && !loading && (
         <FeaturedStreamScroll horizontal={true}>
       {streams.map((stream: StreamData, index: number) => (
         <ComponentWrapper onPress={() => {

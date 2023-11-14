@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Pressable, TouchableOpacity } from 'react-native';
+import { Keyboard, Pressable, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import BackHeader from './back-header';
 import { Colors } from '../style/colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -65,6 +65,7 @@ const Signup = () => {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <ScreenContainer>
       <BackHeader />
       <ContentContainer>
@@ -150,6 +151,7 @@ const Signup = () => {
            </View>
       </ContentContainer>
     </ScreenContainer>
+    </TouchableWithoutFeedback>
   );
 }
 

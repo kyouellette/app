@@ -35,8 +35,8 @@ const Home = () => {
       const twitchStreams = await getTwitchStreams();
       if (Array.isArray(twitchStreams) && twitchStreams.some(stream => stream !== undefined)) {
         setStreams(twitchStreams);
-        setisLoading(false);
       }
+      setisLoading(false);
     }
 
     loadTwitchStreams();

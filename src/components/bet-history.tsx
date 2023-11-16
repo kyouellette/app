@@ -3,6 +3,7 @@ import { rEighteen, rFourteen, rSixteen, sbEighteen, sbFourteen, sbTwelve, sbTwe
 import { Colors } from '../style/colors';
 import Skull from '../../assets/icons/skull.svg';
 import Placement from '../../assets/icons/user.svg'
+import { Bet, BetsPlaced } from '../types';
 
 type BetHistoryType = {
     gameTitle?: string
@@ -17,10 +18,6 @@ type BetPlacedType = {
     category?: string;
     value?: string;
     won?: boolean
-}
-
-type BetType = {
-    bet?: BetHistoryType
 }
 
 type IconMapType = {
@@ -39,16 +36,7 @@ const statusColorMap = {
     Won: Colors.greenOne,
 }
 
-const result = [{
-        category: 'Kills',
-        value: '15',
-},{
-    category: 'Placement',
-    value: '15'
-}
-]
-
-export const BetHistoryComponent = ({bet}: BetType) => {
+export const BetHistoryComponent = ({bet}: {bet: Bet}) => {
   return (
     <BetContainer>
         <Title>{bet?.gameTitle}</Title>
@@ -66,7 +54,7 @@ export const BetHistoryComponent = ({bet}: BetType) => {
                 ))}  
                 </PlacedBetsResultContainer>
             </BetsPlacedContainer>
-            <ResultContainer>
+            {/* <ResultContainer>
                 <SubTitle>Game Result</SubTitle>
                 <ResultResultContainer>
                 {result.map((result, index) => (
@@ -78,7 +66,7 @@ export const BetHistoryComponent = ({bet}: BetType) => {
                     </BetCategoryContainer>
                 ))}
                 </ResultResultContainer>
-            </ResultContainer>
+            </ResultContainer> */}
         </BetDetailsContainer>
         <HorizontalLine />
         <BetSummaryContainer>

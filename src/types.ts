@@ -25,9 +25,18 @@ export type Bet = {
     twitchUsername?: string
     userId?: string
     betGroupId?: string
+    totalBetAmount?: string
     gameTitle?: string
     winnings?: string
     status?: string
     createdAt?: Date
     betsPlaced?: BetsPlaced[]
+}
+
+export type Transaction = {
+    id?: string;
+    createdAt?: Date;
+    userId?: string;
+    amount?: string
+    type?: string;
 }

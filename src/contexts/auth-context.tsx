@@ -1,7 +1,8 @@
 import React, {createContext, useState, useContext, ReactNode, useEffect} from 'react';
 import { auth } from '../../firebaseConfig';
-import { userPostRequest, userGetRequest, walletPostRequest, walletGetRequest, getTwitchChannelName, twitchStartupPostRequest, userPatchRequest } from '../api/api';
+import { userPostRequest, userGetRequest, walletPostRequest, walletGetRequest, getTwitchChannelName, twitchStartupPostRequest, userPatchRequest, betGetRequest } from '../api/api';
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
+import { Bet, Transaction } from '../types';
 // import {AuthData, authService} from '../services/authService';
 
 type AuthContextData = {
@@ -11,6 +12,8 @@ type AuthContextData = {
     signOut(): void;
     saveTwitchDetails(code: string): void;
     unLinkTwitch(): void;
+    getBets(): Promise<Bet[]>;
+    getTransactions(): Promise<Transaction[]>;
     loading: boolean;
   };
 
@@ -119,6 +122,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }
 
+  const getBets = async (): Promise<Bet[]> => {
+    try {
+      const bets = await betGetRequest(`/bet/user/${user?.userId}`, {});
+      return bets;
+    } catch (error) {
+      
+    }
+    return [];
+  }
+
+  const getTransactions = async (): Promise<Transaction[]> => {
+    try {
+      const transactions = await walletGetRequest(`/transactions/user`, {userId: user?.userId});
+      return transactions;
+    } catch (error) {
+      
+    }
+    return [];
+  }
+
   const signUp = async ({email, password, firstName, lastName, username}: CreateUserType) => {
     try {
     const user = await createUserWithEmailAndPassword(auth, email, password);
@@ -139,7 +162,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   return (
     //This component will be used to encapsulate the whole App,
     //so all components will have access to the Context
-    <AuthContext.Provider value={{user, signIn, signOut, signUp, loading, saveTwitchDetails, unLinkTwitch}}>
+    <AuthContext.Provider value={{user, signIn, signOut, signUp, loading, saveTwitchDetails, unLinkTwitch, getBets, getTransactions}}>
       {children}
     </AuthContext.Provider>
   );

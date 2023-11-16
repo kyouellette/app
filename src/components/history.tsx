@@ -1,61 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { ScrollView } from 'react-native';
+import { ActivityIndicator, ScrollView } from 'react-native';
 import { Colors } from '../style/colors';
 import { rEighteen, sbTwentyFour } from '../style/fonts';
 import BetHistoryComponent from './bet-history';
+import { useAuth } from '../contexts/auth-context';
+import { Bet } from '../types';
 
 const History = () => {
-  const bets = [{
-    id: 'abcdef',
-    gameTitle: 'Call of Duty: MW2',
-    totalBetAmount: '200.00',
-    winnings: '300.00',
-    status: 'Won',
-    betsPlaced: [{
-      category: 'Kills',
-      value: '15',
-    },
-    {
-      category: 'Placement',
-      value: '1',
-    }]
-  },
-  {
-    id: 'abcdef',
-    gameTitle: 'Call of Duty: MW2',
-    totalBetAmount: '200.00',
-    winnings: '',
-    status: 'Pending',
-    betsPlaced: [{
-      category: 'Kills',
-      value: '15',
-    },
-    {
-      category: 'Placement',
-      value: '1',
-      won: false,
-    }]
-  },
-  {
-    id: 'abcdef',
-    gameTitle: 'Call of Duty: MW2',
-    totalBetAmount: '200.00',
-    winnings: '0.00',
-    status: 'Lost',
-    betsPlaced: [{
-      category: 'Kills',
-      value: '15',
-    },
-    {
-      category: 'Placement',
-      value: '1',
-    }]
-  }]
-  const isEmpty = bets.length === 0
+  const { getBets } = useAuth()
+  const [bets, setBets] = useState<Bet[]>([])
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getUserBets = async () => {
+      try {
+        const betsData = await getBets();
+        if (betsData) {
+          setBets(betsData);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error fetching bets:', error);
+      }
+    };
+    getUserBets();
+  }, []);
+
+  const isEmpty = bets?.length === 0
   return (
     <ScreenContainer>
       <Header>Your Betting History</Header>
+      {loading && (
+        <ActivityIndicator size="large" color={Colors.greenOne} style={{marginTop: 64, marginLeft: -8}} />
+      )}
+      {!loading && (
       <ScrollView>
       <ContentContainer>
       {isEmpty && (
@@ -74,6 +53,7 @@ const History = () => {
       )}
       </ContentContainer>
       </ScrollView>
+       )}
     </ScreenContainer>
   );
 };
@@ -81,6 +61,7 @@ const History = () => {
 const Header = styled.Text`
   ${sbTwentyFour};
   color: ${Colors.white};
+  padding-left: 8px;
 `;
 
 const BetHistoryContainer = styled.View`

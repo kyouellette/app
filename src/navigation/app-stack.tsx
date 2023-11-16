@@ -5,6 +5,8 @@ import Main from '../components/main-screen';
 import AddTwitch from '../components/add-twitch';
 import StreamerDashboard from '../components/streamer-dashboard';
 import Bet from '../components/bet';
+import TermsAndConditions from '../components/terms-conditions';
+import HowToUse from '../components/how-to-use';
 
 const Stack = createStackNavigator();
 
@@ -29,7 +31,7 @@ export type AppStackParamList = {
   Main: undefined
   AddTwitch: undefined
   EditProfile: undefined
-  Terms: undefined
+  TermsAndConditions: undefined
   Loading: undefined
   HowToUse: undefined
   StreamerDashboard: undefined
@@ -45,6 +47,8 @@ const AppStack = () => {
           <Stack.Screen name="AddTwitch" component={AddTwitch} />
           <Stack.Screen name="StreamerDashboard" component={StreamerDashboard} />
           <Stack.Screen name="Bet" component={Bet} />
+          <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} />
+          <Stack.Screen name="HowToUse" component={HowToUse} />
         </Stack.Navigator>
     );
   }

@@ -47,6 +47,8 @@ const Bet = ({ route }: BetScreenProps) => {
       setWinAmount('');
     } catch (error) {
       return
+    } finally {
+      Keyboard.dismiss();
     }
   };
 

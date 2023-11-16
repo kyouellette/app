@@ -32,7 +32,7 @@ const Profile = () => {
 {
     name: 'Terms & Conditions',
     icon: <TermsIcon width={24} height={24} />,
-    navigationScreen: 'Terms',
+    navigationScreen: 'TermsAndConditions',
     visible: true,
 },
 {

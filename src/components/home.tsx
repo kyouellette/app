@@ -45,6 +45,7 @@ const Home = () => {
   const isEmpty = streams.length === 0
   return (
     <ScreenContainer>
+      <StreamsContainer>
       <Header>Featured Streams</Header>
       <ContentContainer>
       {loading && (
@@ -67,6 +68,12 @@ const Home = () => {
         </FeaturedStreamScroll>
       )}
       </ContentContainer>
+      </StreamsContainer>
+      {/* {!loading && (
+      <CategoryContainer>
+      <Header>Featured Streams</Header>
+      </CategoryContainer>
+      )} */}
     </ScreenContainer>
   );
 };
@@ -77,10 +84,20 @@ const Header = styled.Text`
   color: ${Colors.white};
 `;
 
+const StreamsContainer = styled.View`
+
+`;
+
+const CategoryContainer = styled.View`
+  
+`;
+
 const ScreenContainer = styled.View`
+  flex: 1;
   padding-top: 16px;
   padding-right: 8px;
   padding-bottom: 168px;
+  justify-content: space-between;
 `;
 
 const FeaturedStreamScroll = styled.ScrollView`

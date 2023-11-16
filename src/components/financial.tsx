@@ -34,11 +34,6 @@ const Financial = () => {
     getUserBets();
   }, []);
 
-
-  const handleImageLoad = () => {
-    setIsLoading(false);
-  };
-
   const { user } = useAuth();
 
   return (
@@ -65,11 +60,10 @@ const Financial = () => {
               </ImageContainer>
               <HistoryContainer>
               <Header style={{paddingBottom: 16}}>Transaction History</Header>
-                 <ScrollView>
-                  <TransactionsContainer>
+                 <ScrollView style={{flex: 1}}>
                     {transactions.map((transaction, index) => (
-                      <>
-                      <TransactionItem key={index}>
+                      <View key={index}>
+                      <TransactionItem>
                         <LeftContainer>
                         <DateContainer>{transaction?.createdAt
                               ? `${months[new Date(transaction.createdAt).getMonth() - 1]} ${new Date(transaction.createdAt).getDate()}, ${new Date(transaction.createdAt).getFullYear()}`
@@ -83,9 +77,8 @@ const Financial = () => {
                           {!(index + 1 === transactions.length) && (
                           <Separator />
                           )}
-                        </>
+                        </View>
                     ))}
-                    </TransactionsContainer>
                 </ScrollView>
                 </HistoryContainer>
                 </ContentContainer>
@@ -109,10 +102,12 @@ const Separator = styled.View`
 const ContentContainer = styled.View`
   padding-top: 16px;
   flex-direction: column;
+  flex: 1;
 `;
 
 const HistoryContainer = styled.View`
   padding-top: 16px;
+  flex: 1;
 `;
 
 const TransactionItem = styled.View`
@@ -146,11 +141,11 @@ const LeftContainer = styled.View`
 `;
 
 const ScreenContainer = styled.View`
-  flex: 1;
   padding-top: 16px;
   padding-left: 16px;
   padding-right: 16px;
-  padding-bottom: 640px;
+  padding-bottom: 78px;
+  flex: 1;
 `;
 
 const ImageContainer = styled.ImageBackground`

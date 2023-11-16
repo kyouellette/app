@@ -35,8 +35,7 @@ const History = () => {
         <ActivityIndicator size="large" color={Colors.greenOne} style={{marginTop: 64, marginLeft: -8}} />
       )}
       {!loading && (
-      <ScrollView>
-      <ContentContainer>
+              <ContentContainer>
       {isEmpty && (
         <EmptyContainer>
           <EmptyText>Place a bet to view history</EmptyText>
@@ -44,15 +43,16 @@ const History = () => {
       )}
       {!isEmpty && (
         <BetHistoryContainer>
+        <ScrollView>
       {bets.map((bet, index) => (
         <ComponentWrapper key={index}>
           <BetHistoryComponent bet={bet}/>
         </ComponentWrapper>
-      ))}        
+      ))}     
+        </ScrollView>   
         </BetHistoryContainer>
       )}
       </ContentContainer>
-      </ScrollView>
        )}
     </ScreenContainer>
   );
@@ -65,20 +65,22 @@ const Header = styled.Text`
 `;
 
 const BetHistoryContainer = styled.View`
-  flex-direction: column;
+  flex: 1;
 `;
 
 const ScreenContainer = styled.View`
+  flex: 1;
   padding-top: 16px;
   padding-left: 8px;
   padding-right: 8px;
-  padding-bottom: 168px;
+  padding-bottom: 78px;
 `;
 
 const ComponentWrapper = styled.View`
   margin-bottom: 16px;
 `
 const ContentContainer = styled.View`
+  flex: 1;
   padding-top: 16px;
   flex-direction: column;
 `;

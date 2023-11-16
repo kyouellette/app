@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Colors } from '../style/colors';
-import { sbThirty, rEighteen, sbTwelve, sbFourteen, sbEighteen, sbTwentyFour, sbTwenty, mEighteen } from '../style/fonts';
+import { sbThirty, rEighteen, sbTwelve, sbFourteen, sbEighteen, sbTwentyFour, sbTwenty, mEighteen, sbTen } from '../style/fonts';
 import BackHeader from './back-header';
 import { useAuth } from '../contexts/auth-context';
 import { RouteProp } from '@react-navigation/native';
@@ -189,7 +189,8 @@ useEffect(() => {
         onPress={() => handleOptionPress(category, String(item.value), item.payoutMultiplier)}
         isSelected={selectedOptions[category]?.value === String(item.value)}
       >
-               <ButtonText>{String(item.value)}</ButtonText>
+               <ButtonText>{String(item?.value)}</ButtonText>
+               <MultiplierText>{item?.payoutMultiplier}x</MultiplierText>
                 </OptionButton>
                 </BetChoiceContainer>
               ))}
@@ -255,6 +256,14 @@ const OptionButton = styled.Pressable<{ isSelected: boolean }>`
   align-items: center;
   justify-content: center;
   flex: 1;
+`;
+
+const MultiplierText = styled.Text`
+  color: ${Colors.greenOne};
+  ${sbTwelve};
+  position: absolute;
+  bottom: 4;
+  right: 4;
 `;
 
 

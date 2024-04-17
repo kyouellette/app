@@ -4,8 +4,11 @@ import { Colors } from '../style/colors';
 import FinancialBackground from '../../assets/financial-background.png';
 import { rEight, rSixteen, rTwelve, sbEighteen, sbSixteen, sbThirty, sbTwenty, sbTwentyFour } from '../style/fonts';
 import { useAuth } from '../contexts/auth-context';
+import Play from '../../assets/icons/play.svg';
+// import { TestIds, AdEventType, RewardedAd} from 'react-native-google-mobile-ads';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { Transaction } from '../types';
+
 
 const months = [
   'January', 'February', 'March', 'April',
@@ -18,7 +21,39 @@ const Financial = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { getTransactions } = useAuth();
+  const { user } = useAuth();
+  const [adLoaded, setAdLoaded] = useState(false);
 
+  // const adUnitId = TestIds.REWARDED
+
+  // const ad = RewardedAd.createForAdRequest(adUnitId, {
+  //   requestNonPersonalizedAdsOnly: true,
+  //   keywords: ['gaming', 'streaming']
+  // });
+
+  // useEffect(() => {
+  //   const unsubscribe = ad.addAdEventListener(AdEventType.LOADED, () => {
+  //     setAdLoaded(true);
+  //   });
+
+  //   // Start loading the interstitial straight away
+  //   ad.load();
+
+  //   // Unsubscribe from events on unmount
+  //   return unsubscribe;
+  // }, []);
+
+  //   const showAd = () => {
+  //     ad.show();
+  //   }
+
+  const currentTime = new Date();
+
+  const timeSinceLastClaim = user && user?.lastClaim && !isNaN(new Date(user?.lastClaim).getTime())
+    ? (currentTime.getTime() - new Date(user?.lastClaim).getTime()) / (1000 * 60 * 60) // Convert milliseconds to hours
+    : null;
+
+  const pointsRedeemable = timeSinceLastClaim!= null && timeSinceLastClaim > 1 || timeSinceLastClaim === null;
   useEffect(() => {
     const getUserBets = async () => {
       try {
@@ -34,8 +69,6 @@ const Financial = () => {
     getUserBets();
   }, []);
 
-  const { user } = useAuth();
-
   return (
     <ScreenContainer>
       <Header>Your Wallet</Header>
@@ -47,13 +80,18 @@ const Financial = () => {
           <ImageContainer source={FinancialBackground}>
         <AvailableBalanceContent>
               <AvailableBalanceText>Available Balance</AvailableBalanceText>
-              <BalanceText>${user?.balance}</BalanceText>
+              <BalanceText>
+                {user?.balance}
+                </BalanceText>
               <ButtonContainer>
-                <AddButton>
-                  <ButtonText>Add Money</ButtonText>
+              <AddButton disabled={!pointsRedeemable}>
+                  <ButtonText>
+                  {pointsRedeemable ? <> <Play height={18} widith={18} />
+                  Free Points</> : 'Not Available'}
+                  </ButtonText>
                 </AddButton>
                 <WithdrawButton>
-                  <ButtonText>Withdraw</ButtonText>
+                  <ButtonText>Redeem</ButtonText>
                 </WithdrawButton>
               </ButtonContainer>
               </AvailableBalanceContent>
@@ -71,7 +109,8 @@ const Financial = () => {
                           <TransactionId>{transaction?.id}</TransactionId>
                         </LeftContainer>
                         <AmountContainer color={transaction?.type === 'add' ? Colors.greenOne : Colors.redOne}>
-                          {transaction?.type === 'add' ? '+' : '-'}${new Number(transaction?.amount).toFixed(2)}
+                          {transaction?.type === 'add' ? '+' : '-'}
+                          {new Number(transaction?.amount).toFixed(2)}
                           </AmountContainer>
                       </TransactionItem>
                           {!(index + 1 === transactions.length) && (
@@ -190,6 +229,8 @@ const WithdrawButton = styled.TouchableOpacity`
 `;
 
 const ButtonText = styled.Text`
+  flex-direction: row;
+  justify-content: center;
   ${sbEighteen}
   color: ${Colors.blackOne};
 `;

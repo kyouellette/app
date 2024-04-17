@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 import { Colors } from '../style/colors';
 import Avatar from './avatar';
 import { sbFourteen } from '../style/fonts';
+import Fire from '../../assets/icons/fire.svg'
 
 const AvatarName = ({username, balance} : {username: string, balance: string}) => {
   return (
@@ -10,7 +11,12 @@ const AvatarName = ({username, balance} : {username: string, balance: string}) =
         <Avatar />
         <NameAndBalance>
             <NameContainer>{username}</NameContainer>
-            <BalanceContainer>${balance}</BalanceContainer>
+            <BalanceContainer>
+            <Fire width={18} height={18} color={Colors.greenOne} />
+            <BalanceOnlyContainer>
+            {balance}
+            </BalanceOnlyContainer>
+            </BalanceContainer>
         </NameAndBalance>
     </Container>
   );
@@ -31,7 +37,15 @@ const NameContainer = styled.Text`
     ${sbFourteen}
 `;
 
+const BalanceOnlyContainer = styled.Text`
+    margin-top: 4px;
+`;
+
 const BalanceContainer = styled.Text`
+    flex-direction: row;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
     color: ${Colors.greenOne};
     ${sbFourteen}
 `;

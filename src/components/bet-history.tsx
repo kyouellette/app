@@ -3,6 +3,7 @@ import { rEighteen, rFourteen, rSixteen, sbEighteen, sbFourteen, sbTwelve, sbTwe
 import { Colors } from '../style/colors';
 import Skull from '../../assets/icons/skull.svg';
 import Placement from '../../assets/icons/user.svg'
+import Fire from '../../assets/icons/fire.svg'
 import { Bet, BetsPlaced } from '../types';
 
 type BetHistoryType = {
@@ -72,11 +73,17 @@ export const BetHistoryComponent = ({bet}: {bet: Bet}) => {
         <BetSummaryContainer>
             <BetSummaryOptionContainer>
                 <BetSummaryHeader>Wager</BetSummaryHeader>
-                <BetSummaryValue>${bet?.totalBetAmount}</BetSummaryValue>
+                <BetSummaryValue>
+                <Fire width={16} height={16} color={Colors.greenOne} />
+                {bet?.totalBetAmount}
+                </BetSummaryValue>
             </BetSummaryOptionContainer>
             <BetSummaryOptionContainer>
                 <BetSummaryHeader>Prize</BetSummaryHeader>
-                <BetSummaryValue>${bet?.winnings}</BetSummaryValue>
+                <BetSummaryValue>
+                <Fire width={16} height={16} color={Colors.greenOne} />
+                {bet?.winnings}
+                </BetSummaryValue>
             </BetSummaryOptionContainer>
             <BetSummaryOptionContainer>
                 <BetSummaryHeader>Status</BetSummaryHeader>
@@ -120,7 +127,9 @@ const BetSummaryHeader = styled.Text`
 const BetSummaryValue = styled.Text`
     ${sbFourteen};
     color: ${Colors.white};
-    padding-top: 6px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 `;
 
 const BetSummaryOptionContainer = styled.View`

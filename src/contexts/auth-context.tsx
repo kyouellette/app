@@ -31,6 +31,7 @@ type AuthContextData = {
     username?: string;
     balance?: string;
     twitchLinked?: boolean;
+    lastClaim?: Date | null;
   }
 
 
@@ -53,6 +54,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             username: userData?.username,
             balance: walletData?.balance,
             twitchLinked: userData?.twitchAccessToken ? true : false,
+            lastClaim: userData?.lastClaim || null
           });
         } catch (error) {
           console.error('Error fetching user data:', error);
@@ -108,6 +110,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const twitchUsername = await getTwitchChannelName(access_token);
       userPatchRequest('/twitch/add', {userId: user?.userId, twitchAccessToken: access_token, twitchRefreshToken: refresh_token, twitchUsername });
       setUser({...user, twitchLinked: true});
+    } catch (error) {
+  
+    }
+  }
+
+  const saveLastClaim = async () => {
+    const claimDate = new Date()
+    try {
+      userPatchRequest('/claim', {userId: user?.userId, lastClaim: claimDate});
+      setUser({...user, lastClaim: claimDate});
     } catch (error) {
   
     }

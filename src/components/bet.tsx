@@ -203,7 +203,6 @@ useEffect(() => {
         <BettingContainer>
           <BetInputRow>
           <InputWrapper style={{marginRight: 8}}>
-        <InputDollarText>$</InputDollarText>
         <TextInput
           style={InputStyles}
           value={betAmount}
@@ -213,7 +212,6 @@ useEffect(() => {
         />
         </InputWrapper>
         <InputWrapper style={{marginLeft: 8}}>
-        <InputDollarText>$</InputDollarText>
         <TextInput
           style={InputStyles}
           value={winAmount}

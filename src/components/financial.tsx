@@ -5,7 +5,6 @@ import FinancialBackground from '../../assets/financial-background.png';
 import { rEight, rSixteen, rTwelve, sbEighteen, sbSixteen, sbThirty, sbTwenty, sbTwentyFour } from '../style/fonts';
 import { useAuth } from '../contexts/auth-context';
 import Play from '../../assets/icons/play.svg';
-// import { TestIds, AdEventType, RewardedAd} from 'react-native-google-mobile-ads';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { Transaction } from '../types';
 
@@ -22,14 +21,6 @@ const Financial = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { getTransactions } = useAuth();
   const { user } = useAuth();
-  const [adLoaded, setAdLoaded] = useState(false);
-
-  // const adUnitId = TestIds.REWARDED
-
-  // const ad = RewardedAd.createForAdRequest(adUnitId, {
-  //   requestNonPersonalizedAdsOnly: true,
-  //   keywords: ['gaming', 'streaming']
-  // });
 
   // useEffect(() => {
   //   const unsubscribe = ad.addAdEventListener(AdEventType.LOADED, () => {
@@ -84,7 +75,7 @@ const Financial = () => {
                 {user?.balance}
                 </BalanceText>
               <ButtonContainer>
-              <AddButton disabled={!pointsRedeemable}>
+              <AddButton onPress={} disabled={!pointsRedeemable}>
                   <ButtonText>
                   {pointsRedeemable ? <> <Play height={18} widith={18} />
                   Free Points</> : 'Not Available'}

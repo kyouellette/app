@@ -116,8 +116,8 @@ export const betPostRequest = async (endpoint: string, data: any) => {
 export const twitchStartupPostRequest = async (code: string): Promise<TwitchTokenResponse> => {
   try {
     const requestData = {
-      client_id: 'uazprb0v9zr5p11om9mo3tc99h6r6h',
-      client_secret: '38l2fww55uo8ko7qp9cj1g3quk1gb2',
+      client_id: '',
+      client_secret: '',
       code,
       grant_type: 'authorization_code',
       redirect_uri: 'http://localhost:3100'
